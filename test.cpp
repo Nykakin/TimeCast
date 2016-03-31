@@ -40,8 +40,14 @@ private:
 template <typename Out, typename In>
 TimeProxy<Out> time_cast(In in);
 
-template <typename Out, typename In>
-TimeProxy<Out> time_cast(In in, const char* format);
+template <typename Out>
+TimeProxy<Out> time_cast(std::string in, const char* format) {
+    // read in to std::time_t
+    struct tm bk_time;  
+    strptime(in.c_str(), format, &bk_time);
+    std::time_t time = mktime(&bk_time);
+    return TimeProxy<Out>(time);
+}
 
 template <typename Out>
 TimeProxy<Out> time_cast(std::time_t time) {
@@ -55,24 +61,6 @@ TimeProxy<std::string> time_cast(chrono_time in) {
     std::time_t time = std::chrono::system_clock::to_time_t(in);
 
     return TimeProxy<std::string>(time);
-}
-
-template <>
-TimeProxy<std::string> time_cast(std::string in, const char* format) {
-    // read in to std::time_t
-    struct tm bk_time;  
-    strptime(in.c_str(), format, &bk_time);
-    std::time_t time = mktime(&bk_time);
-    return TimeProxy<std::string>(time);
-}
-
-template <>
-TimeProxy<chrono_time> time_cast(std::string in, const char* format) {
-    // read in to std::time_t
-    struct tm bk_time;  
-    strptime(in.c_str(), format, &bk_time);
-    std::time_t time = mktime(&bk_time);
-    return TimeProxy<chrono_time>(time);
 }
 
 // tests
