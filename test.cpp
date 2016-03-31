@@ -36,6 +36,17 @@ private:
     std::time_t _time;
 };
 
+template <>
+class TimeProxy<std::time_t> {
+public:
+    TimeProxy(std::time_t time) : _time(time) {}
+    std::time_t operator()() {
+        return _time;
+    }
+private:
+    std::time_t _time;
+};
+
 // time_cast
 template <typename Out, typename In>
 TimeProxy<Out> time_cast(In in);
@@ -55,12 +66,11 @@ TimeProxy<Out> time_cast(std::time_t time) {
     return TimeProxy<Out>(time);
 }
 
-template <>
-TimeProxy<std::string> time_cast(chrono_time in) {
+template <typename Out>
+TimeProxy<Out> time_cast(chrono_time in) {
     // read in to std::time_t
     std::time_t time = std::chrono::system_clock::to_time_t(in);
-
-    return TimeProxy<std::string>(time);
+    return TimeProxy<Out>(time);
 }
 
 // tests
@@ -91,6 +101,14 @@ int main() {
     tmp = time_cast<chrono_time>(time_t_time)();
     std::cout << time_cast<std::string>(tmp)("%x %X") << std::endl; // 03/31/16 17:03:10
     std::cout << std::endl;  
+
+    // std::string to std::time_t
+    std::cout << time_cast<std::time_t>(str_time, "%c")() << std::endl; // 1459433419
+    std::cout << std::endl;
+
+    // std::chrono::time_point to std::time_t
+    std::cout << time_cast<std::time_t>(now)() << std::endl; // 1459439087
+    std::cout << std::endl;
 }
 
 
