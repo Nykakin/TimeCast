@@ -52,9 +52,6 @@ private:
 };
 
 // time_cast
-template <typename Out, typename In>
-TimeProxy<Out> time_cast(In in);
-
 template <typename Out>
 TimeProxy<Out> time_cast(std::string in, const char* format) {
     // read in to std::time_t
