@@ -1,6 +1,6 @@
 # TimeCast
 
-TimeCast is a simple. header-only helper library for conversion between C++ time formats, especially from and to std::string.
+TimeCast is a simple header-only library for conversion between C++ time formats, especially from and to std::string.
 
 ### Version
 0.0.1
@@ -10,23 +10,23 @@ TimeCast is a simple. header-only helper library for conversion between C++ time
 To cast one time to another use `time_utils::time_cast` template function, passing target type as a template argument. The input type will be deduced:
 
 ```C++
-time_utils::time_cast<output_type>(input_time)();
+output_type out = time_utils::time_cast<output_type>(input_time)();
 ```
 Following types are supported:
 * `std::string`
 * `std::time_t`
 * `std::chrono::time_point<std::chrono::system_clock>`
 
-In order to read strings you also have to pass [strftime format](http://man7.org/linux/man-pages/man3/strftime.3.html) inside first pair of parentheses:
+In order to read strings you also have to pass [strftime format string](http://man7.org/linux/man-pages/man3/strftime.3.html) inside first pair of parentheses:
 
 ```C++
-time_utils::time_cast<std::time_t>(input_string, "%T")();
+std::time_t out = time_utils::time_cast<std::time_t>(input_string, "%T")();
 ```
 
-In order to write to strins you have to pass format string in second pair of parentheses:
+In order to get strings strins you have to pass format string in second pair of parentheses:
 
 ```C++
-time_utils::time_cast<std::string>(input_data)(%t)
+std::string out = time_utils::time_cast<std::string>(input_data)("%t")
 ```
 
 ### Example
