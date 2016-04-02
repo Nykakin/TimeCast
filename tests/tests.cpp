@@ -3,9 +3,11 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+#include <cstring>
 
 #include "catch.hpp"
 #include "../time_utils/time_cast.hpp"
+#include "../time_utils/time_cast_definitions.hpp"
 
 TEST_CASE("Time conversions are correct", "[time_cast]") {
     using time_utils::time_cast;
@@ -42,5 +44,21 @@ TEST_CASE("Time conversions are correct", "[time_cast]") {
     SECTION("std::chrono::time_point to std::time_t") {
         REQUIRE(time_cast<std::time_t>(chrono_time_time)() == 1459439688);
     }
+}
 
+TEST_CASE("strftime defines are correct", "[time_cast_defines]") {
+    REQUIRE(strcmp("%H%M%S%T%R%Y%m%d%F%X%x%c",
+        TIMECAST_HOUR
+        TIMECAST_MINUTE
+        TIMECAST_SECOND
+        TIMECAST_TIME
+        TIMECAST_SHORT_TIME
+        TIMECAST_YEAR
+        TIMECAST_MONTH
+        TIMECAST_DAY
+        TIMECAST_DATE
+        TIMECAST_LOCAL_TIME
+        TIMECAST_LOCAL_DATE
+        TIMECAST_LOCAL_DATETIME
+    ) == 0);
 }
