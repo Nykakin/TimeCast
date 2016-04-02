@@ -29,6 +29,52 @@ In order to get strings strins you have to pass format string in second pair of 
 std::string out = time_utils::time_cast<std::string>(input_data)("%t")
 ```
 
+Instead of using strftime format strings you can use following definitions:
+
+| Makro | strftime string        | Description |
+| ----- |:----------------------:| ----------- |
+| TIMECAST_HOUR           | "%H" | Hour, range 00-23
+| TIMECAST_MINUTE         | "%M" | Minute, range 00-59
+| TIMECAST_SECOND         | "%S" | Second, range 00-59
+| TIMECAST_TIME           | "%T" | Time, format HH:MM:SS
+| TIMECAST_SHORT_TIME     | "%R" | Time, format HH:MM
+| TIMECAST_YEAR           | "%Y" | Year
+| TIMECAST_MONTH          | "%m" | Month, range 01-12
+| TIMECAST_DAY            | "%d" | Day, range 01-31
+| TIMECAST_DATE           | "%F" | Date, format YY-MM-DD (ISO 8601)
+| TIMECAST_LOCAL_TIME     | "%X" | Time, format of current locale
+| TIMECAST_LOCAL_DATE     | "%x" | Date, format of current locale
+| TIMECAST_LOCAL_DATETIME | "%c" | Datetime, format of current locale
+| TIMECAST_EPOCH          | "%s" | Seconds since the Epoch, 1970-01-01 00:00:00 +0000 (UTC)
+
+These are defined in a separate header, time_utils/time_cast_definitions.hpp, to avoid definition pollution. Using the preprocessor allows an easy concatenation of string literals:
+
+```C++
+#include <iostream>
+
+#include "time_utils/time_cast.hpp"
+#include "time_utils/time_cast_definitions.hpp"
+
+using time_utils::time_cast;
+using chrono_time = std::chrono::time_point<std::chrono::system_clock>;
+
+int main() {
+    std::string str_time("1429443688"); // format "%c"
+
+    std::cout << time_cast<std::string>(
+        str_time,
+        TIMECAST_EPOCH
+    )(
+        "Hour:" TIMECAST_HOUR ", minute:" TIMECAST_MINUTE
+    ) << std::endl;
+}
+```
+```bash
+$ g++-5 test.cpp -o test -std=c++11
+$ ./test
+Hour:13, minute:41
+```
+
 ### Example
 
 ```C++
